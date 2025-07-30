@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import EnvironmentVariables from "@/components/EnvironmentVariables";
-const socket = io("http://localhost:9001");
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const Hero = () => {
     const navigate = useNavigate();
@@ -62,7 +62,7 @@ const Hero = () => {
             }
         });
 
-        const { data } = await axios.post(`http://localhost:9000/build-project`, {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/build-project`, {
             git_url: repoURL,
             is_public: isPublic,
             slug: slug,
@@ -127,24 +127,24 @@ const Hero = () => {
                             type="text"
                             placeholder="your-project.makethumb.com"
                         />
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <Switch
-                                id="public-toggle"
-                                checked={isPublic}
-                                onCheckedChange={setIsPublic}
-                            />
-                            <Label htmlFor="public-toggle">Make public</Label>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    If checked, this deployment will be visible to the community.
-                                </TooltipContent>
-                            </Tooltip>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Switch
+                                    id="public-toggle"
+                                    checked={isPublic}
+                                    onCheckedChange={setIsPublic}
+                                />
+                                <Label htmlFor="public-toggle">Make public</Label>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        If checked, this deployment will be visible to the community.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                     <EnvironmentVariables
