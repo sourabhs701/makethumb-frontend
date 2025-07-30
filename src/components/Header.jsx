@@ -19,6 +19,8 @@ export const Header = () => {
         localStorage.removeItem("repoUrl");
         localStorage.removeItem("avatar");
         localStorage.removeItem("username");
+        localStorage.removeItem("isPublic");
+        localStorage.removeItem("slug");
         setIsAuthenticated(false);
         setIsUserMenuOpen(false);
         toast.success("Logged out successfully");

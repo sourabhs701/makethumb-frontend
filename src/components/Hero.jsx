@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import EnvironmentVariables from "@/components/EnvironmentVariables";
 const socket = io("http://localhost:9001");
 
 const Hero = () => {
@@ -18,6 +19,14 @@ const Hero = () => {
     const [repoURL, setURL] = useState(localStorage.getItem("repoURL") || "");
     const [isPublic, setIsPublic] = useState(localStorage.getItem("isPublic") || 0);
     const [slug, setSlug] = useState(localStorage.getItem("slug") || "");
+    const [envVars, setEnvVars] = useState(() => {
+        const saved = localStorage.getItem("envVars");
+        try {
+            return saved ? JSON.parse(saved) : [{ key: "", value: "" }];
+        } catch {
+            return [{ key: "", value: "" }];
+        }
+    });
     const [logs, setLogs] = useState([]);
 
     const [loading, setLoading] = useState(false);
@@ -37,18 +46,27 @@ const Hero = () => {
     const handleClickDeploy = useCallback(async () => {
 
         setLoading(true);
-        //check if user is logged in
         if (!localStorage.getItem("token")) {
             localStorage.setItem("repoURL", repoURL);
             localStorage.setItem("isPublic", isPublic);
             localStorage.setItem("slug", slug);
+            localStorage.setItem("envVars", JSON.stringify(envVars));
             navigate("/login");
             return;
         }
+        // Convert environment variables array to object
+        const envObject = {};
+        envVars.forEach(({ key, value }) => {
+            if (key && value) {
+                envObject[key] = value;
+            }
+        });
+
         const { data } = await axios.post(`http://localhost:9000/build-project`, {
             git_url: repoURL,
             is_public: isPublic,
             slug: slug,
+            env_vars: envObject,
         }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -65,7 +83,7 @@ const Hero = () => {
             console.log(`Subscribing to logs:${projectSlug}`);
             socket.emit("subscribe", `logs:${projectSlug}`);
         }
-    }, [repoURL, isPublic, slug]);
+    }, [repoURL, isPublic, slug, envVars, navigate]);
 
     const handleSocketIncommingMessage = useCallback((message) => {
         console.log(`[Incomming Socket Message]:`, typeof message, message);
@@ -81,6 +99,10 @@ const Hero = () => {
             socket.off("message", handleSocketIncommingMessage);
         };
     }, [handleSocketIncommingMessage]);
+
+    useEffect(() => {
+        localStorage.setItem("envVars", JSON.stringify(envVars));
+    }, [envVars]);
 
 
     return (
@@ -105,9 +127,6 @@ const Hero = () => {
                             type="text"
                             placeholder="your-project.makethumb.com"
                         />
-                    </div>
-
-
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Switch
@@ -126,6 +145,13 @@ const Hero = () => {
                             </Tooltip>
                         </div>
                     </div>
+                    </div>
+
+                    <EnvironmentVariables
+                        envVars={envVars}
+                        setEnvVars={setEnvVars}
+                        loading={loading}
+                    />
 
                     <Button
                         onClick={handleClickDeploy}

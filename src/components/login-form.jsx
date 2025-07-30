@@ -17,14 +17,14 @@ export function LoginForm({
     return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
   }
 
-  const getGoogleOAuthUrl = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || window.location.origin
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your_google_client_id'
-    const redirectUri = `${apiUrl}/auth/google`
-    const scope = 'email profile'
+  // const getGoogleOAuthUrl = () => {
+  //   const apiUrl = import.meta.env.VITE_API_URL || window.location.origin
+  //   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your_google_client_id'
+  //   const redirectUri = `${apiUrl}/auth/google`
+  //   const scope = 'email profile'
 
-    return `https://accounts.google.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
-  }
+  //   return `https://accounts.google.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
+  // }
 
   const handleGitHubLogin = () => {
     if (isLoading) return
@@ -32,11 +32,11 @@ export function LoginForm({
     window.location.href = getGitHubOAuthUrl()
   }
 
-  const handleGoogleLogin = () => {
-    if (isLoading) return
-    setIsLoading(true)
-    window.location.href = getGoogleOAuthUrl()
-  }
+  // const handleGoogleLogin = () => {
+  //   if (isLoading) return
+  //   setIsLoading(true)
+  //   window.location.href = getGoogleOAuthUrl()
+  // }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -63,7 +63,7 @@ export function LoginForm({
           {isLoading ? "Redirecting..." : "Login with GitHub"}
         </Button>
 
-        <Button
+        {/* <Button
           type="button"
           variant="outline"
           className="w-full"
@@ -85,15 +85,15 @@ export function LoginForm({
               fill="#EA4335" />
           </svg>
           {isLoading ? "Redirecting..." : "Login with Google"}
-        </Button>
+        </Button> */}
       </div>
 
-      <div className="text-center text-sm">
+      {/* <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
         <a href="/signup" className="underline underline-offset-4">
           Sign up
         </a>
-      </div>
+      </div> */}
     </div>
   );
 }
