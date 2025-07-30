@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  build: {
-    outDir: "../api-server/public",
-  },
+  // build: {
+  //   outDir: "../api-server/public",
+  // },
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
