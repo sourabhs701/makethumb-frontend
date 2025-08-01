@@ -14,7 +14,10 @@ import { useNavigate } from "react-router-dom";
 import EnvironmentVariables from "@/components/deployment/EnvironmentVariables";
 import SlugInput from "@/components/deployment/SlugInput";
 
-const socket = io(import.meta.env.VITE_SOCKET_URL);
+const socket = io(import.meta.env.VITE_SOCKET_URL, {
+    withCredentials: true,
+});
+
 
 const DeploySection = () => {
     const navigate = useNavigate();
@@ -72,10 +75,6 @@ const DeploySection = () => {
 
 
         if (data && data.data) {
-            localStorage.removeItem("repoURL");
-            localStorage.removeItem("isPublic");
-            localStorage.removeItem("slug");
-            localStorage.removeItem("envVars");
 
             const { projectSlug } = data.data;
 
