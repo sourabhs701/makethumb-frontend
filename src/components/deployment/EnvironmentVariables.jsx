@@ -6,7 +6,6 @@ import { ChevronDown, ChevronRight, Plus, Minus } from "lucide-react";
 
 const EnvironmentVariables = ({ envVars, setEnvVars, loading = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-
     const updateEnvVar = useCallback((index, field, value) => {
         const newEnvVars = [...envVars];
         newEnvVars[index] = { ...newEnvVars[index], [field]: value };

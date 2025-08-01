@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import axiosInstance from '@/lib/axios'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
-import { Header } from '@/components/Header'
+import { Header } from '@/components/layout/Header'
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([])

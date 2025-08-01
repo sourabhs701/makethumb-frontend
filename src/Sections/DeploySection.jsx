@@ -11,12 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import EnvironmentVariables from "@/components/EnvironmentVariables";
+import EnvironmentVariables from "@/components/deployment/EnvironmentVariables";
+import SlugInput from "@/components/deployment/SlugInput";
 
-import SlugInput from "./SlugInput";
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
-const Hero = () => {
+const DeploySection = () => {
     const navigate = useNavigate();
     const [repoURL, setURL] = useState(localStorage.getItem("repoURL") || "");
     const [isPublic, setIsPublic] = useState(localStorage.getItem("isPublic") || 0);
@@ -203,4 +203,4 @@ const Hero = () => {
 
 };
 
-export default Hero;
+export default DeploySection;
