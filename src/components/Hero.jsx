@@ -12,6 +12,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import EnvironmentVariables from "@/components/EnvironmentVariables";
+
+import SlugInput from "./SlugInput";
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const Hero = () => {
@@ -47,14 +49,9 @@ const Hero = () => {
 
         setLoading(true);
         if (!localStorage.getItem("token")) {
-            localStorage.setItem("repoURL", repoURL);
-            localStorage.setItem("isPublic", isPublic);
-            localStorage.setItem("slug", slug);
-            localStorage.setItem("envVars", JSON.stringify(envVars));
             navigate("/login");
             return;
         }
-        // Convert environment variables array to object
         const envObject = {};
         envVars.forEach(({ key, value }) => {
             if (key && value) {
@@ -73,7 +70,13 @@ const Hero = () => {
             },
         });
 
+
         if (data && data.data) {
+            localStorage.removeItem("repoURL");
+            localStorage.removeItem("isPublic");
+            localStorage.removeItem("slug");
+            localStorage.removeItem("envVars");
+
             const { projectSlug } = data.data;
 
 
@@ -92,6 +95,8 @@ const Hero = () => {
         logContainerRef.current?.scrollIntoView({ behavior: "smooth" });
     }, []);
 
+
+
     useEffect(() => {
         socket.on("message", handleSocketIncommingMessage);
 
@@ -103,6 +108,10 @@ const Hero = () => {
     useEffect(() => {
         localStorage.setItem("envVars", JSON.stringify(envVars));
     }, [envVars]);
+
+    useEffect(() => {
+        localStorage.setItem("slug", slug);
+    }, [slug]);
 
 
     return (
@@ -120,13 +129,13 @@ const Hero = () => {
                         />
                     </div>
                     <div className="flex items-center gap-2">
-                        <Input
-                            disabled={loading}
+
+                        <SlugInput
+                            loading={loading}
                             value={slug}
-                            onChange={(e) => setSlug(e.target.value)}
-                            type="text"
-                            placeholder="your-project.makethumb.com"
+                            onChange={setSlug}
                         />
+
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Switch
