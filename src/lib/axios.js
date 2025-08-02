@@ -4,7 +4,7 @@ const axiosInstance = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
       ? "http://localhost:9000/"
-      : "https://api.makethumb.com/",
+      : import.meta.env.VITE_API_URL,
   timeout: 10000,
 });
 
