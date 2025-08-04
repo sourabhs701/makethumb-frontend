@@ -113,7 +113,7 @@ const ProjectsPage = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Created:</p>
-                        {new Date(project.createdAt).toLocaleString()}
+                      {new Date(project.createdAt).toLocaleString()}
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button
@@ -159,7 +159,7 @@ const ProjectsPage = () => {
                         </div>
                         <div>
                           <span className="text-gray-600">Created: </span>
-                          <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                          <span>{new Date(project.createdAt).toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
