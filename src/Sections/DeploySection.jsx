@@ -75,20 +75,18 @@ const DeploySection = () => {
 
 
         if (data && data.data) {
-
             const { projectSlug } = data.data;
-
-
             setDeployPreviewURL(`https://${projectSlug}.makethumb.com`);
-
-
-            console.log(`Subscribing to logs:${projectSlug}`);
             socket.emit("subscribe", `logs:${projectSlug}`);
         }
+
+        localStorage.removeItem("repoURL");
+        localStorage.removeItem("isPublic");
+        localStorage.removeItem("slug");
+        localStorage.removeItem("envVars");
     }, [repoURL, isPublic, slug, envVars, navigate]);
 
     const handleSocketIncommingMessage = useCallback((message) => {
-        console.log(`[Incomming Socket Message]:`, typeof message, message);
         const { log } = JSON.parse(message);
         setLogs((prev) => [...prev, log]);
         logContainerRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -105,16 +103,15 @@ const DeploySection = () => {
     }, [handleSocketIncommingMessage]);
 
     useEffect(() => {
+        localStorage.setItem("repoURL", repoURL);
         localStorage.setItem("envVars", JSON.stringify(envVars));
-    }, [envVars]);
-
-    useEffect(() => {
         localStorage.setItem("slug", slug);
-    }, [slug]);
+        localStorage.setItem("isPublic", isPublic);
 
+    }, [envVars, slug, repoURL, isPublic]);
 
     return (
-        <div className="flex justify-center items-center h-screen bg-muted px-4">
+        <div className="flex justify-center items-center h-screen  px-4">
             <Card className="w-full max-w-xl space-y-4 p-6">
                 <CardContent className="space-y-4">
                     <div className="flex items-center gap-2">
@@ -127,15 +124,15 @@ const DeploySection = () => {
                             placeholder="GitHub URL"
                         />
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between gap-2">
 
                         <SlugInput
                             loading={loading}
                             value={slug}
                             onChange={setSlug}
                         />
-
                         <div className="flex items-center justify-between">
+
                             <div className="flex items-center gap-2">
                                 <Switch
                                     id="public-toggle"
@@ -145,7 +142,7 @@ const DeploySection = () => {
                                 <Label htmlFor="public-toggle">Make public</Label>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                        <Info className="w-6 h-6 text-muted-foreground cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent side="right">
                                         If checked, this deployment will be visible to the community.

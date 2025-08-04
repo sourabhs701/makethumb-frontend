@@ -1,91 +1,93 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { ChevronDown, ChevronRight, Plus, Minus } from "lucide-react";
 
 const EnvironmentVariables = ({ envVars, setEnvVars, loading = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const updateEnvVar = useCallback((index, field, value) => {
-        const newEnvVars = [...envVars];
-        newEnvVars[index] = { ...newEnvVars[index], [field]: value };
-        setEnvVars(newEnvVars);
-    }, [envVars, setEnvVars]);
 
-    const addEnvVar = useCallback(() => {
-        setEnvVars([...envVars, { key: "", value: "" }]);
-    }, [envVars, setEnvVars]);
+    const updateEnvVar = (index, field, value) => {
+        const updated = [...envVars];
+        updated[index][field] = value;
+        setEnvVars(updated);
+    };
 
-    const removeEnvVar = useCallback((index) => {
-        if (envVars.length > 1) {
-            const newEnvVars = envVars.filter((_, i) => i !== index);
-            setEnvVars(newEnvVars);
-        }
-    }, [envVars, setEnvVars]);
+    const addEnvVar = () => setEnvVars([...envVars, { key: "", value: "" }]);
+
+    const removeEnvVar = (index) => {
+        const updated = envVars.filter((_, i) => i !== index);
+        setEnvVars(updated);
+    };
+
 
     return (
         <div className="space-y-2">
             <div
-                className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-muted/50 transition-colors"
                 onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-2 cursor-pointer p-2 rounded-md hover:bg-muted/50"
             >
-                {isExpanded ? (
-                    <ChevronDown className="w-4 h-4" />
-                ) : (
-                    <ChevronRight className="w-4 h-4" />
-                )}
-                <Label className="font-medium text-sm cursor-pointer">Environment Variables</Label>
+                {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                <Label className="text-sm">Environment Variables</Label>
             </div>
 
             {isExpanded && (
                 <div className="space-y-3 pl-6">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                        <span className="flex-1">Key</span>
-                        <span className="flex-1">Value</span>
-                        <span className="w-8"></span>
-                    </div>
-
                     {envVars.map((envVar, index) => (
                         <div key={index} className="flex items-center gap-2">
                             <Input
                                 disabled={loading}
                                 value={envVar.key}
-                                onChange={(e) => updateEnvVar(index, 'key', e.target.value)}
-                                placeholder="EXAMPLE_NAME"
-                                className="flex-1 text-sm"
+                                onChange={(e) => updateEnvVar(index, "key", e.target.value)}
+                                placeholder="KEY"
+                                className="flex-1"
                             />
                             <Input
                                 disabled={loading}
                                 value={envVar.value}
-                                onChange={(e) => updateEnvVar(index, 'value', e.target.value)}
-                                placeholder="I9JU23NF394R6HH"
-                                className="flex-1 text-sm"
+                                onChange={(e) => updateEnvVar(index, "value", e.target.value)}
+                                placeholder="VALUE"
+                                className="flex-1"
                             />
                             <Button
                                 type="button"
                                 variant="ghost"
-                                size="sm"
-                                className="w-8 h-8 p-0"
+                                size="icon"
                                 onClick={() => removeEnvVar(index)}
-                                disabled={loading || envVars.length === 1}
+                                disabled={loading}
                             >
                                 <Minus className="w-4 h-4" />
                             </Button>
                         </div>
                     ))}
 
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="flex items-center gap-2 text-sm"
-                        onClick={addEnvVar}
-                        disabled={loading}
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add More
-                    </Button>
+                    <div className="flex justify-end items-center gap-2">
 
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={addEnvVar}
+                            disabled={loading}
+                            className="text-sm flex items-center gap-2"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add Environment Variable
+                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent side="right">
+                                <p className="text-sm">ROOT_DIR : / (default)</p>
+                                <p className="text-sm">INSTALL_COMMADND: npm install (default)</p>
+                                <p className="text-sm">BUILD_COMMAND : npm build (default)</p>
+
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
                 </div>
             )}
         </div>

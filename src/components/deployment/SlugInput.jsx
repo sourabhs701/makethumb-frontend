@@ -31,7 +31,7 @@ export default function SlugInput({ loading, value, onChange }) {
     }, [value]);
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-6 w-full">
             <Input
                 disabled={loading}
                 value={value}

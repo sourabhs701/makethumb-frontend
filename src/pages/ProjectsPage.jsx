@@ -6,6 +6,7 @@ import axiosInstance from '@/lib/axios'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '@/components/layout/Header'
+import { Globe } from 'lucide-react'
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([])
@@ -22,6 +23,7 @@ const ProjectsPage = () => {
       setLoading(true)
       const response = await axiosInstance.get('/projects')
       if (response.data.success) {
+        console.log(response.data.data)
         setProjects(response.data.data)
       }
     } catch (error) {
@@ -32,22 +34,7 @@ const ProjectsPage = () => {
     }
   }
 
-  const deleteProject = async (projectSlug) => {
-    if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-      return
-    }
 
-    try {
-      const response = await axiosInstance.delete(`/projects/${projectSlug}`)
-      if (response.data.success) {
-        toast.success('Project deleted successfully')
-        setProjects(projects.filter(project => project.slug !== projectSlug))
-      }
-    } catch (error) {
-      console.error('Error deleting project:', error)
-      toast.error('Failed to delete project')
-    }
-  }
 
   const viewProject = (projectSlug) => {
     navigate(`/projects/${projectSlug}`)
@@ -126,9 +113,7 @@ const ProjectsPage = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Created:</p>
-                      <p className="text-sm">
-                        {new Date(project.created_at).toLocaleDateString()}
-                      </p>
+                        {new Date(project.createdAt).toLocaleString()}
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button
@@ -142,9 +127,9 @@ const ProjectsPage = () => {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => deleteProject(project.slug)}
+                        onClick={() => { window.open(`https://${project.slug}.makethumb.com`, '_blank') }}
                       >
-                        Delete
+                        <Globe />
                       </Button>
                     </div>
                   </div>
@@ -189,9 +174,9 @@ const ProjectsPage = () => {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => deleteProject(project.slug)}
+                        onClick={() => { window.open(`https://${project.slug}.makethumb.com`, '_blank') }}
                       >
-                        Delete
+                        <Globe />
                       </Button>
                     </div>
                   </div>
