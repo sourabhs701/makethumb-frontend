@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner'
+import { useAuth } from '@/providers/AuthProvider';
 
 const AuthPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [isProcessing, setIsProcessing] = useState(true)
 
     useEffect(() => {
@@ -19,17 +21,15 @@ const AuthPage = () => {
             toast.error("Authentication failed. Please try again.")
             navigate("/login");
         } else if (token) {
-            localStorage.setItem("token", token);
-            localStorage.setItem("avatar", avatar);
-            localStorage.setItem("username", username);
+            login(token, { username, avatar });
             toast.success("Login successful!")
-            navigate("/");
+            navigate("/new");
         } else {
             navigate("/login");
         }
 
         setIsProcessing(false)
-    }, [location.search, navigate]);
+    }, []);
 
     if (isProcessing) {
         return (
@@ -41,8 +41,6 @@ const AuthPage = () => {
             </div>
         )
     }
-
-    return (<></>)
 }
 
 export default AuthPage

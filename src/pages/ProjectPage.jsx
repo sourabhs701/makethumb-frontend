@@ -75,7 +75,7 @@ const ProjectPage = () => {
     <>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">{project.slug}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{project.slug}</h1>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -88,40 +88,43 @@ const ProjectPage = () => {
         </div>
 
         <div className="max-w-2xl">
-          <Card>
+          <Card className="bg-card text-card-foreground border border-border">
             <CardHeader>
-              <CardTitle>Project Details</CardTitle>
+              <CardTitle className="text-foreground">Project Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="slug">Project Slug</Label>
+                <Label htmlFor="slug" className="text-foreground">Project Slug</Label>
 
-                <p className="mt-1 font-mono bg-gray-100 p-2 rounded">
+                <p className="mt-1 font-mono bg-muted p-2 rounded">
                   {project.slug}
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="git_url">Git Repository URL</Label>
+                <Label htmlFor="git_url" className="text-foreground">Git Repository URL</Label>
 
-                <p className="mt-1 font-mono bg-gray-100 p-2 rounded break-all">
+                <p className="mt-1 font-mono bg-muted p-2 rounded break-all">
                   {project.git_url || 'Not set'}
                 </p>
 
               </div>
 
               <div>
-                <Label>Created At</Label>
-                <p className="mt-1 text-gray-600">
+                <Label className="text-foreground">Created At</Label>
+                <p className="mt-1 text-muted-foreground">
                   {new Date(project.createdAt).toLocaleString()}
                 </p>
               </div>
 
               <div>
                 <Label>Visit Project</Label>
-                <span className="mt-1 text-blue-500 underline" onClick={() => { window.open(`https://${project.slug}.makethumb.com`, '_blank') }}>
-                  https://{project.slug}.makethumb.com
-                </span>
+                <button
+                  className="mt-1 text-blue-600 underline"
+                  onClick={() => { window.open(`https://${project.slug}.makethumb.com`, '_blank') }}
+                >
+                  {`https://${project.slug}.makethumb.com`}
+                </button>
               </div>
 
             </CardContent>

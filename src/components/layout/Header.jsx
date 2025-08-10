@@ -1,36 +1,25 @@
-import { useState, useEffect } from "react";
-import { ArrowRight, Menu, LogOut, Settings } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Menu, LogOut, Settings, X, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "@/providers/AuthProvider";
+import { useTheme } from "@/providers/ThemeProvider";
 
 export const Header = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isAuthenticated, logout } = useAuth();
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        setIsAuthenticated(!!token);
-    }, []);
+    const { resolvedTheme, toggleTheme } = useTheme();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("repoUrl");
-        localStorage.removeItem("avatar");
-        localStorage.removeItem("username");
-        localStorage.removeItem("isPublic");
-        localStorage.removeItem("slug");
-        setIsAuthenticated(false);
+        logout();
         setIsUserMenuOpen(false);
         toast.success("Logged out successfully");
         navigate("/");
     };
 
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+
 
     const toggleUserMenu = () => {
         setIsUserMenuOpen(!isUserMenuOpen);
@@ -39,8 +28,8 @@ export const Header = () => {
     return (
         <header className="sticky z-20 top-0 backdrop-blur-sm ">
             {/* Promotional Banner */}
-            <div className="flex justify-center items-center py-3 bg-black text-white text-sm gap-3">
-                <p className="text-white/60 hidden md:block">
+            <div className="flex justify-center items-center py-3 bg-primary text-primary-foreground text-sm gap-3">
+                <p className="block opacity-80">
                     Deploy React apps in seconds. Zero config. Instant updates.
                 </p>
                 <div className="inline-flex gap-1 items-center" >
@@ -60,18 +49,26 @@ export const Header = () => {
                             onClick={() => navigate("/")}
                         >
                             <img src="/logo.png" alt="Logo" height={40} width={40} />
-                            <span className="ml-2 text-xl font-bold text-black hidden sm:block">
+                            <span className="ml-2 text-xl font-bold text-foreground dark:text-white  block">
                                 MakeThumb
                             </span>
                         </div>
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center gap-6">
+                        <nav className="flex items-center gap-6">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-lg hover:bg-accent transition-colors"
+                                aria-label="Toggle theme"
+                                title="Toggle theme"
+                            >
+                                {resolvedTheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                            </button>
                             {isAuthenticated ? (
                                 <>
                                     <button
                                         onClick={() => navigate("/projects")}
-                                        className="text-black/60 hover:text-black transition-colors"
+                                        className="text-foreground/70 hover:text-foreground transition-colors"
                                     >
                                         Projects
                                     </button>
@@ -80,27 +77,27 @@ export const Header = () => {
                                     <div className="relative">
                                         <button
                                             onClick={toggleUserMenu}
-                                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors"
                                         >
                                             <img src={localStorage.getItem("avatar")} alt="Avatar" className="h-8 w-8 rounded-full" />
                                         </button>
 
                                         {/* User Dropdown */}
                                         {isUserMenuOpen && (
-                                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                                            <div className="absolute right-0 mt-2 w-48 bg-card text-card-foreground rounded-lg shadow-lg border border-border py-2">
                                                 <button
                                                     onClick={() => {
                                                         setIsUserMenuOpen(false);
                                                         navigate("/settings");
                                                     }}
-                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-black/60 hover:bg-gray-50 transition-colors"
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-foreground/70 hover:bg-accent transition-colors"
                                                 >
                                                     <Settings className="h-4 w-4" />
                                                     Settings
                                                 </button>
                                                 <button
                                                     onClick={handleLogout}
-                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 transition-colors"
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-destructive hover:bg-destructive/10 transition-colors"
                                                 >
                                                     <LogOut className="h-4 w-4" />
                                                     Logout
@@ -111,85 +108,18 @@ export const Header = () => {
                                 </>
                             ) : (
                                 <>
-                                    <button
+                                    {/* <button
                                         onClick={() => navigate("/login")}
-                                        className="text-black/60 hover:text-black transition-colors"
+                                        className="text-foreground/70 hover:text-foreground transition-colors"
                                     >
                                         Login
-                                    </button>
+                                    </button> */}
                                 </>
                             )}
                         </nav>
 
-                        {/* Mobile Menu Button */}
-                        <button
-                            className="md:hidden p-2"
-                            onClick={toggleMenu}
-                        >
-                            {isMenuOpen ? (
-                                <X className="h-5 w-5" />
-                            ) : (
-                                <Menu className="h-5 w-5" />
-                            )}
-                        </button>
-                    </div>
 
-                    {/* Mobile Navigation */}
-                    {isMenuOpen && (
-                        <div className="md:hidden mt-4 py-4 border-t border-gray-200">
-                            <nav className="flex flex-col gap-4">
-                                {isAuthenticated ? (
-                                    <>
-                                        <button
-                                            onClick={() => {
-                                                navigate("/");
-                                                setIsMenuOpen(false);
-                                            }}
-                                            className="text-left text-black/60 hover:text-black transition-colors"
-                                        >
-                                            Dashboard
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                navigate("/projects");
-                                                setIsMenuOpen(false);
-                                            }}
-                                            className="text-left text-black/60 hover:text-black transition-colors"
-                                        >
-                                            Projects
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                navigate("/settings");
-                                                setIsMenuOpen(false);
-                                            }}
-                                            className="text-left text-black/60 hover:text-black transition-colors"
-                                        >
-                                            Settings
-                                        </button>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="text-left text-red-600 hover:text-red-700 transition-colors"
-                                        >
-                                            Logout
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <button
-                                            onClick={() => {
-                                                navigate("/login");
-                                                setIsMenuOpen(false);
-                                            }}
-                                            className="text-left text-black/60 hover:text-black transition-colors"
-                                        >
-                                            Login
-                                        </button>
-                                    </>
-                                )}
-                            </nav>
-                        </div>
-                    )}
+                    </div>
                 </div>
             </div>
         </header>

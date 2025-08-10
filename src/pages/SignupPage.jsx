@@ -6,7 +6,7 @@ export default function SignupPage() {
             <div className="flex flex-col gap-4 p-6 md:p-10">
                 <div className="flex justify-center gap-2 md:justify-start">
                     <a href="/" className="flex items-center gap-2 font-medium">
-                        <div className="bg-white text-primary-foreground flex size-8 items-center justify-center rounded-md">
+                        <div className=" text-primary-foreground flex size-8 items-center justify-center rounded-md">
                             <img src="/logo.png" className="size-8 " />
                         </div>
                         Makethumb
@@ -18,11 +18,11 @@ export default function SignupPage() {
                     </div>
                 </div>
             </div>
-            <div className="bg-muted relative hidden lg:block">
+            <div className=" relative hidden lg:block">
                 <img
-                    src="/placeholder.svg"
+                    src="/auth-image.jpg"
                     alt="Image"
-                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    className="absolute inset-0 h-full w-full object-cover rounded-l-4xl"
                 />
             </div>
         </div>

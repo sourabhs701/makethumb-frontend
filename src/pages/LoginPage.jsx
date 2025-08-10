@@ -2,7 +2,7 @@ import { LoginForm } from "@/components/auth/login-form"
 
 export default function LoginPage() {
     return (
-        <div className="grid min-h-svh lg:grid-cols-2 bg-white">
+        <div className="grid min-h-svh lg:grid-cols-2 bg-background">
             <div className="flex flex-col gap-4 p-6 md:p-10">
                 <div className="flex justify-center gap-2 md:justify-start">
                     <a href="/" className="flex items-center gap-2 font-medium">
@@ -20,7 +20,7 @@ export default function LoginPage() {
                 <img
                     src="/auth-image.jpg"
                     alt="Image"
-                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    className="absolute inset-0 h-full w-full object-cover rounded-l-4xl"
                 />
             </div>
         </div>

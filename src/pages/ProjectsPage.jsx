@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import axiosInstance from '@/lib/axios'
@@ -11,7 +11,7 @@ import { Globe } from 'lucide-react'
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
-  const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem('projects_view_mode') || 'grid')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -40,6 +40,14 @@ const ProjectsPage = () => {
     navigate(`/projects/${projectSlug}`)
   }
 
+  useEffect(() => {
+    localStorage.setItem('projects_view_mode', viewMode)
+  }, [viewMode])
+
+  const sortedProjects = useMemo(() => {
+    return [...projects].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  }, [projects])
+
   if (loading) {
     return (
       <>
@@ -55,9 +63,9 @@ const ProjectsPage = () => {
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">My Projects</h1>
+          <h1 className="text-3xl font-bold text-foreground">My Projects</h1>
           <div className="flex gap-3 items-center">
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-muted rounded-lg p-1">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
@@ -81,7 +89,7 @@ const ProjectsPage = () => {
                 List
               </Button>
             </div>
-            <Button onClick={() => navigate('/')}>
+            <Button onClick={() => navigate('/new')}>
               Add new
             </Button>
           </div>
@@ -98,21 +106,21 @@ const ProjectsPage = () => {
           </Card>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow">
+            {sortedProjects.map((project) => (
+              <Card key={project.id} className="hover:shadow-lg transition-shadow bg-card text-card-foreground border border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg">{project.slug}</CardTitle>
+                  <CardTitle className="text-lg text-foreground">{project.slug}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-gray-600">Git URL:</p>
-                      <p className="text-sm font-mono bg-gray-100 p-2 rounded truncate">
+                      <p className="text-sm text-muted-foreground">Git URL:</p>
+                      <p className="text-sm font-mono bg-muted p-2 rounded truncate">
                         {project.git_url || 'Not set'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Created:</p>
+                      <p className="text-sm text-muted-foreground">Created:</p>
                       {new Date(project.createdAt).toLocaleString()}
                     </div>
                     <div className="flex gap-2 pt-2">
@@ -140,25 +148,25 @@ const ProjectsPage = () => {
         ) : (
           <div className="space-y-4">
             {projects.map((project) => (
-              <Card key={project.id} className="hover:shadow-md transition-shadow">
+              <Card key={project.id} className="hover:shadow-md transition-shadow bg-card text-card-foreground border border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-2">
-                        <h3 className="text-lg font-semibold">{project.slug}</h3>
-                        <span className="text-sm text-gray-500">
+                        <h3 className="text-lg font-semibold text-foreground">{project.slug}</h3>
+                        <span className="text-sm text-muted-foreground">
                           #{project.id}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-600">Git URL: </span>
-                          <span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">
+                          <span className="text-muted-foreground">Git URL: </span>
+                          <span className="font-mono bg-muted px-2 py-1 rounded text-xs">
                             {project.git_url || 'Not set'}
                           </span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Created: </span>
+                          <span className="text-muted-foreground">Created: </span>
                           <span>{new Date(project.createdAt).toLocaleString()}</span>
                         </div>
                       </div>
